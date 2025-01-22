@@ -17,8 +17,7 @@ env:
 jobs:
   build-push:
     runs-on: ubuntu-latest
-    environment:  ${{ github.ref_name == 'test' && 'prod' || 
-      github.ref_name == 'staging' && 'staging' }}
+    environment: myenv
     outputs:
       image_id: ${{ steps.image_id.outputs.id }}
     steps:
