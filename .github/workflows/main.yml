@@ -1,0 +1,35 @@
+name: Build Docker image (( with env file from Azure Keyvault), push to ACR and deploy it in manifest repository
+
+on:
+  workflow_call:
+    inputs:
+      APP:
+        type: string
+        default: app
+    secrets:
+      VAULT_NAME:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  REGISTRY_URL: ${{ inputs.REGISTRY_DOMAIN }}/${{ inputs.MANIFEST_APP_NAME }}
+  DEPLOYMENT_ENV: ${{ 
+    github.ref_name == 'main' && 'prod' ||
+    github.ref_name == 'staging' && 'staging' }}
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    environment:  ${{ github.ref_name == 'test' && 'prod' || 
+      github.ref_name == 'staging' && 'staging' }}
+    outputs:
+      image_id: ${{ steps.image_id.outputs.id }}
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v4
+      
+      - name: test
+        run: echo a
+      
